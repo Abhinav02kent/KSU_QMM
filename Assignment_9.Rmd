@@ -1,0 +1,51 @@
+---
+title: "ASSIGNMENT-9"
+author: "Abhinav"
+date: "2023-11-26"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+#Explanation of terms:
+y1+: Amount over the employment level goal.
+y1−: Amount under the employment level goal.
+y2+: Amount over the earnings next year goal.
+y2−: Amount under the earnings next year goal.
+x1: Production rate of Product 1.
+x2: Production rate of Product 2.
+x3: Production rate of Product 3.
+
+#Loading the necessary package and reading the LP file from the set directory
+```{r}
+library(lpSolveAPI)
+
+x <- read.lp("A9.lp")
+x
+```
+#Now, solving the problem which is assigned to x and finding out the optimal value for the objective function along with varibles showing the constraints applied on the objective function. 
+```{r}
+solve(x)
+get.objective(x) 
+```
+#The result of solve(x) is [1] 0, indicating that the solver found a solution, but the optimal value of the objective function (total profit,Z) is $225 in Millions. This suggests that, based on the current model and input data, the solution is not generating a positive profit.
+```{r}
+get.variables(x)      # get objective value 
+get.constraints(x)    # get values of decision variables
+```
+#The result of get.variables(x) is [1] 0 0 15 25 0 0 0. This provides the values of decision variables at the optimal solution. It indicates that to achieve the optimal solution, the production rates are x1=0,x2=0,x3=15,y1p=25,y1m=0,y2m=0 and y2p=0. This implies the optimal solution involves not producing Products 1 and 2, only producing Product 3, and making a reduction of 25 members in the employment.
+
+**The result of get.constraints(x) is [1] 50 75, indicating the values of the constraints. The first value (50) corresponds to the employment level constraint, and the second value (75) corresponds to the earnings next year constraint. These are likely the right-hand side (RHS) values of the constraints.**
+```{r}
+get.sensitivity.rhs(x)
+get.sensitivity.objex(x)
+```
+#Duals (Shadow Prices):
+The values under $duals are the shadow prices associated with the constraints in the model. Shadow prices indicate how much the optimal objective function value would increase if there is a one-unit increase in the right-hand side (RHS) of the corresponding constraint.
+In this case, the shadow prices are [1] 6 -1 -8 -2 0 0 -12 -2 -1]. Positive values suggest that an increase in the RHS of the corresponding constraint would lead to an increase in the optimal objective value.
+#Ranges for Right-Hand Side (RHS) Coefficients:
+$dualsfrom and $dualstill represent the allowable ranges for the right-hand side (RHS) coefficients of the constraints.Min=-1.0e+30 and Max=5.0e+01
+#Ranges for Objective Function Coefficients:
+The allowable range for the coefficient of X3 in the objective function is from 2.357143e+01 to 30.
